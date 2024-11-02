@@ -1,0 +1,16 @@
+{
+  "appId": "com.heonys.resouce-manager",
+  "productName": "resouce-manager",
+  "icon": "./desktopicon.png",
+  "files": ["dist-react", "dist-electron"],
+  "mac": {
+    "target": "dmg"
+  },
+  "win": {
+    "target": ["portable", "msi"]
+  },
+  "linux": {
+    "target": "AppImage",
+    "category": "Utility"
+  }
+}
