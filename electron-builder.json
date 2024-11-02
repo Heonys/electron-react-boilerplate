@@ -1,6 +1,6 @@
 {
-  "appId": "com.heonys.resouce-manager",
-  "productName": "resouce-manager",
+  "appId": "com.heonys.electron-react-app",
+  "productName": "electron-react-app",
   "icon": "./desktopicon.png",
   "files": ["dist-react", "dist-electron"],
   "mac": {
