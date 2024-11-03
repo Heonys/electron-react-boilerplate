@@ -3,11 +3,12 @@
   "productName": "electron-react-app",
   "icon": "./desktopicon.png",
   "files": ["dist-react", "dist-electron"],
+  "extraResources": ["dist-electron/preload.cjs"],
   "mac": {
     "target": "dmg"
   },
   "win": {
-    "target": ["portable", "msi"]
+    "target": ["portable"]
   },
   "linux": {
     "target": "AppImage",
