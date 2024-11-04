@@ -7,17 +7,23 @@ function App() {
     setCount((prev) => prev + 1);
   };
 
+  const handleInvoke = async () => {
+    const staticData = await window.electron.getStaticData();
+    console.log(staticData);
+  };
+
   useEffect(() => {
-    window.electron.subscribeStatistics((statistics) => {
+    const unsubscribeFn = window.electron.subscribeStatistics((statistics) => {
       console.log(statistics);
     });
+    return unsubscribeFn;
   }, []);
 
   return (
     <div>
       <div>{count}</div>
       <button onClick={handleClick}>++</button>
-      <button>구독</button>
+      <button onClick={handleInvoke}>static</button>
     </div>
   );
 }

@@ -10,6 +10,8 @@ type StaticData = {
   totlaMemoryGB: number;
 };
 
+type UnsubscribeFn = () => void;
+
 type EventPayloadMapping = {
   statistics: Statistics;
   getStaticData: StaticData;
@@ -17,7 +19,7 @@ type EventPayloadMapping = {
 
 interface Window {
   electron: {
-    subscribeStatistics: (callback: (statistics: Statistics) => void) => void;
+    subscribeStatistics: (callback: (statistics: Statistics) => void) => UnsubscribeFn;
     getStaticData: () => Promise<StaticData>;
   };
 }
