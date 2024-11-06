@@ -2,6 +2,8 @@ import { app, BrowserWindow } from "electron";
 import { ipcMainHandler, isDev } from "./utils.js";
 import { getPreloadPath, getUIPath } from "./pathResolver.js";
 import { getStaticData, pollResource } from "./resourceManaget.js";
+import { createTray } from "./tray.js";
+import { createApplicationMemu } from "./menu.js";
 
 let mainWindow: BrowserWindow | null = null;
 
@@ -17,19 +19,59 @@ function createWindow() {
 
   if (isDev) {
     mainWindow.loadURL("http://localhost:5123");
-    mainWindow.webContents.openDevTools();
+    // mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadFile(getUIPath());
   }
 
   pollResource(mainWindow);
   ipcMainHandler("getStaticData", () => getStaticData());
+
+  createApplicationMemu(mainWindow);
+  createTray(mainWindow);
+  handleCloseEvent(mainWindow);
 }
 
 app.whenReady().then(createWindow);
 
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
-});
+function handleCloseEvent(mainWindow: BrowserWindow) {
+  let willclose = false;
+
+  mainWindow.on("close", (event) => {
+    if (willclose) return;
+
+    event.preventDefault();
+    mainWindow.hide();
+    if (app.dock) app.dock.hide();
+  });
+
+  app.on("before-quit", () => {
+    willclose = true;
+  });
+
+  mainWindow.on("show", () => {
+    willclose = false;
+  });
+}
+
+/* 
+
+시나리오 
+1. x버튼을 눌러서 윈도우를 종료함 (창을 종료) 
+2. fiie-exit 또는 어떠한 방식으로든 직접 프로세스를 종료함 
+
+
+이벤트 
+1. close -> before-quit -> will-quit -> quit 
+2. before-quit -> [close, close, close ... ] -> will-quit -> quit 
+
+
+
+
+
+
+
+
+
+
+*/

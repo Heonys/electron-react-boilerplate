@@ -2,6 +2,7 @@ const { contextBridge, ipcRenderer } = require("electron");
 
 contextBridge.exposeInMainWorld("electron", {
   subscribeStatistics: (callback) => ipcOn("statistics", callback),
+  subscribeChangeView: (callback) => ipcOn("changeView", callback),
   getStaticData: () => ipcInvoke("getStaticData"),
 } satisfies Window["electron"]);
 

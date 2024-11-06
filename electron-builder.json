@@ -3,7 +3,7 @@
   "productName": "electron-react-app",
   "icon": "./desktopicon.png",
   "files": ["dist-react", "dist-electron"],
-  "extraResources": ["dist-electron/preload.cjs"],
+  "extraResources": ["dist-electron/preload.cjs", "src/assets/**"],
   "mac": {
     "target": "dmg"
   },

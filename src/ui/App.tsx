@@ -1,29 +1,40 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import useStatistics from "./hooks/useStatistics";
+import Chart from "./components/Chart";
+import { useEffect } from "react";
 
 function App() {
-  const [count, setCount] = useState(0);
+  const [activeView, setActiveView] = useState<View>("CPU");
+  const statistics = useStatistics(10);
+  const cpuUsage = statistics.map((stat) => stat.cpuUsage);
+  const memoryUsage = statistics.map((stat) => stat.memoryUsage);
+  const storageUsage = statistics.map((stat) => stat.storageUsage);
 
-  const handleClick = () => {
-    setCount((prev) => prev + 1);
-  };
-
-  const handleInvoke = async () => {
-    const staticData = await window.electron.getStaticData();
-    console.log(staticData);
+  const activeUsage = () => {
+    switch (activeView) {
+      case "CPU": {
+        return cpuUsage;
+      }
+      case "RAM": {
+        return memoryUsage;
+      }
+      case "STORAGE": {
+        return storageUsage;
+      }
+    }
   };
 
   useEffect(() => {
-    const unsubscribeFn = window.electron.subscribeStatistics((statistics) => {
-      console.log(statistics);
+    return window.electron.subscribeChangeView((view) => {
+      setActiveView(view);
     });
-    return unsubscribeFn;
-  }, []);
+  });
 
   return (
     <div>
-      <div>{count}</div>
-      <button onClick={handleClick}>++</button>
-      <button onClick={handleInvoke}>static</button>
+      <div style={{ width: 500, height: 120 }}>
+        <Chart data={activeUsage()} maxDataPoint={10} />
+      </div>
     </div>
   );
 }
