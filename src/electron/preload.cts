@@ -4,6 +4,7 @@ contextBridge.exposeInMainWorld("electron", {
   subscribeStatistics: (callback) => ipcOn("statistics", callback),
   subscribeChangeView: (callback) => ipcOn("changeView", callback),
   getStaticData: () => ipcInvoke("getStaticData"),
+  sendFrameAction: (frame) => ipcSend("sendFrameAction", frame),
 } satisfies Window["electron"]);
 
 function ipcInvoke<Channel extends keyof EventPayloadMapping>(
@@ -21,4 +22,11 @@ function ipcOn<Channel extends keyof EventPayloadMapping>(
   };
   ipcRenderer.on(channel, callback);
   return () => ipcRenderer.off(channel, callback);
+}
+
+function ipcSend<Channel extends keyof EventPayloadMapping>(
+  channel: Channel,
+  payload: EventPayloadMapping[Channel]
+) {
+  ipcRenderer.send(channel, payload);
 }

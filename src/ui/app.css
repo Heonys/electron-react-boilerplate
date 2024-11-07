@@ -1,0 +1,33 @@
+header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  text-align: left;
+  box-sizing: border-box;
+  padding: 0.5rem;
+  background-color: #181818;
+  -webkit-app-region: drag;
+}
+
+header button {
+  all: unset;
+  border-radius: 50%;
+  width: 1rem;
+  height: 1rem;
+  margin: 0.25rem;
+  cursor: pointer;
+}
+
+button#close {
+  background-color: #ff3b30;
+  -webkit-app-region: no-drag;
+}
+button#minimize {
+  background-color: #ffcc00;
+  -webkit-app-region: no-drag;
+}
+button#maxmize {
+  background-color: #4cd964;
+  -webkit-app-region: no-drag;
+}

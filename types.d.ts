@@ -11,11 +11,13 @@ type StaticData = {
 };
 
 type View = "CPU" | "RAM" | "STORAGE";
+type WindowFrameAction = "CLOSE" | "MINIMIZE" | "MAXIMIZE";
 
 type EventPayloadMapping = {
   statistics: Statistics;
   getStaticData: StaticData;
   changeView: View;
+  sendFrameAction: WindowFrameAction;
 };
 
 type CleanUp = () => void;
@@ -25,5 +27,6 @@ interface Window {
     subscribeStatistics: (callback: (statistics: Statistics) => void) => CleanUp;
     subscribeChangeView: (callback: (view: View) => void) => CleanUp;
     getStaticData: () => Promise<StaticData>;
+    sendFrameAction: (payload: WindowFrameAction) => void;
   };
 }

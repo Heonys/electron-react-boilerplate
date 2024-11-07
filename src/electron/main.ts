@@ -1,5 +1,5 @@
 import { app, BrowserWindow } from "electron";
-import { ipcMainHandler, isDev } from "./utils.js";
+import { ipcMainHandler, ipcMainOn, isDev } from "./utils.js";
 import { getPreloadPath, getUIPath } from "./pathResolver.js";
 import { getStaticData, pollResource } from "./resourceManaget.js";
 import { createTray } from "./tray.js";
@@ -11,6 +11,7 @@ function createWindow() {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 600,
+    frame: false,
     webPreferences: {
       contextIsolation: true,
       preload: getPreloadPath(),
@@ -19,13 +20,29 @@ function createWindow() {
 
   if (isDev) {
     mainWindow.loadURL("http://localhost:5123");
-    // mainWindow.webContents.openDevTools();
+    mainWindow.webContents.openDevTools();
   } else {
     mainWindow.loadFile(getUIPath());
   }
 
   pollResource(mainWindow);
   ipcMainHandler("getStaticData", () => getStaticData());
+  ipcMainOn("sendFrameAction", (frame) => {
+    switch (frame) {
+      case "CLOSE": {
+        mainWindow?.close();
+        break;
+      }
+      case "MINIMIZE": {
+        mainWindow?.minimize();
+        break;
+      }
+      case "MAXIMIZE": {
+        mainWindow?.maximize();
+        break;
+      }
+    }
+  });
 
   createApplicationMemu(mainWindow);
   createTray(mainWindow);
@@ -64,14 +81,5 @@ function handleCloseEvent(mainWindow: BrowserWindow) {
 이벤트 
 1. close -> before-quit -> will-quit -> quit 
 2. before-quit -> [close, close, close ... ] -> will-quit -> quit 
-
-
-
-
-
-
-
-
-
 
 */

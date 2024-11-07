@@ -14,6 +14,16 @@ export function ipcMainHandler<Channel extends keyof EventPayloadMapping>(
   });
 }
 
+export function ipcMainOn<Channel extends keyof EventPayloadMapping>(
+  channel: Channel,
+  handler: (payload: EventPayloadMapping[Channel]) => void
+) {
+  ipcMain.on(channel, (event, data) => {
+    validationEventFrame(event.senderFrame);
+    handler(data);
+  });
+}
+
 export function ipcWebContentsSend<Channel extends keyof EventPayloadMapping>(
   channel: Channel,
   webContents: WebContents,
