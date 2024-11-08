@@ -2,10 +2,14 @@ import { useState, useEffect } from "react";
 import useStatistics from "./hooks/useStatistics";
 import Chart from "./components/Chart";
 import "./app.css";
+import WindowFrame from "./components/WindowFrame";
+import SelectOptionButton from "./components/SelectOptionButton";
+import useStaticData from "./hooks/useStaticData";
 
 function App() {
   const [activeView, setActiveView] = useState<View>("CPU");
   const statistics = useStatistics(10);
+  const staticData = useStaticData();
   const cpuUsage = statistics.map((stat) => stat.cpuUsage);
   const memoryUsage = statistics.map((stat) => stat.memoryUsage);
   const storageUsage = statistics.map((stat) => stat.storageUsage);
@@ -28,32 +32,38 @@ function App() {
     return window.electron.subscribeChangeView((view) => {
       setActiveView(view);
     });
-  });
-
-  const handleClick = (event: React.MouseEvent) => {
-    const btn = event.target as HTMLButtonElement;
-    switch (btn.id) {
-      case "close": {
-        return window.electron.sendFrameAction("CLOSE");
-      }
-      case "minimize": {
-        return window.electron.sendFrameAction("MINIMIZE");
-      }
-      case "maxmize": {
-        return window.electron.sendFrameAction("MAXIMIZE");
-      }
-    }
-  };
+  }, []);
 
   return (
-    <div className="container">
-      <header>
-        <button id="close" onClick={handleClick} />
-        <button id="minimize" onClick={handleClick} />
-        <button id="maxmize" onClick={handleClick} />
-      </header>
-      <div style={{ width: 500, height: 120, marginTop: "10rem" }}>
-        <Chart data={activeUsage()} maxDataPoint={10} />
+    <div>
+      <WindowFrame />
+      <div className="gird-container">
+        <div>
+          <SelectOptionButton
+            title="CPU"
+            view="CPU"
+            subTitle={staticData?.cpuModel ?? ""}
+            data={cpuUsage}
+            onClick={() => setActiveView("CPU")}
+          />
+          <SelectOptionButton
+            title="RAM"
+            view="RAM"
+            subTitle={`${staticData?.totlaMemoryGB.toString() ?? ""} GB`}
+            data={memoryUsage}
+            onClick={() => setActiveView("RAM")}
+          />
+          <SelectOptionButton
+            title="STORAGE"
+            view="STORAGE"
+            subTitle={`${staticData?.totalStorage ?? ""} GB`}
+            data={storageUsage}
+            onClick={() => setActiveView("STORAGE")}
+          />
+        </div>
+        <div className="main-grid">
+          <Chart selectedView={activeView} data={activeUsage()} maxDataPoint={10} />
+        </div>
       </div>
     </div>
   );

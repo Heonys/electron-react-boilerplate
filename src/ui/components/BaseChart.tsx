@@ -2,17 +2,19 @@ import { ResponsiveContainer, AreaChart, Area, CartesianGrid, XAxis, YAxis } fro
 
 type Props = {
   data: { value: number | undefined }[];
+  fill: string;
+  stroke: string;
 };
 
-const BaseChart = ({ data }: Props) => {
+const BaseChart = ({ data, fill, stroke }: Props) => {
   return (
     <ResponsiveContainer width="100%" height="100%">
       <AreaChart data={data}>
         <CartesianGrid stroke="#333" strokeDasharray="5 5" fill="#1C1C1C" />
         <Area
           fillOpacity={0.3}
-          fill={"#0A4D5C"}
-          stroke={"#5DD4EE"}
+          fill={fill}
+          stroke={stroke}
           strokeWidth={3}
           type="monotone"
           dataKey="value"
